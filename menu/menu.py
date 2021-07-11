@@ -1,6 +1,7 @@
 from blessed import Terminal
 from PIL import Image
 
+
 # Constants
 IMAGE_WIDTH = 100
 IMAGE_HEIGHT = 50
@@ -47,9 +48,9 @@ def get_pixels(path: str) -> list:
 def draw_image(terminal: Terminal, pixels: list) -> None:
     """Draws the provided pixels to the terminal"""
     for row in pixels:
-        line = ''
+        line = ''        
         for pixel in row:
-            line += terminal.on_color_rgb(*pixel) + ' '
+            line += terminal.on_color_rgb(*pixel) + ' '        
         # print() is slow, which makes this method faster than printing each pixel individually
         print(line + terminal.normal)
 
@@ -103,12 +104,12 @@ def main() -> None:
     menu_text_pixels = get_pixels(MENU_IMAGE_PATH + '_overlay')
     menu_text = get_text(menu_text_pixels)
     draw_image(terminal, menu_pixels)
-    update_menu(terminal, current_menu, menu_text, menu_pixels)
+    update_menu(terminal, current_menu, menu_text, menu_pixels)    
     # Control loop
     with terminal.cbreak():
         key = terminal.inkey(timeout=0)
         while key.name != 'KEY_ESCAPE':
-            key = terminal.inkey(timeout=0)
+            key = terminal.inkey(timeout=0)            
             if key.name == 'KEY_LEFT':
                 current_menu -= 1
                 update_menu(terminal, current_menu, menu_text, menu_pixels)
@@ -116,7 +117,14 @@ def main() -> None:
                 current_menu += 1
                 update_menu(terminal, current_menu, menu_text, menu_pixels)
         print(terminal.clear + 'Exiting!', end='')
+    
 
 
 if __name__ == '__main__':
+    import time
+    from pyautogui import press
+    start_time = time.time()
     main()
+    press("esc")
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
