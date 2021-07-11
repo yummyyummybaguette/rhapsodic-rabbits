@@ -40,8 +40,8 @@ def get_pixels(path: str) -> list:
     im = Image.open('Resources/' + path + '.png')
     # Compensates for half-width pixels
     # Nearest-neighbor resizing is used because color clarity is needed
-    im = im.resize((IMAGE_WIDTH * 2, IMAGE_HEIGHT), Image.NEAREST)
-    return [[im.getpixel((x, y)) for x in range(IMAGE_WIDTH * 2)] for y in range(IMAGE_HEIGHT)]
+    im = im.resize((IMAGE_WIDTH, IMAGE_HEIGHT), Image.NEAREST)
+    return [[im.getpixel((x, y)) for x in range(IMAGE_WIDTH)] for y in range(IMAGE_HEIGHT)]
 
 
 def draw_image(terminal: Terminal, pixels: list) -> None:
