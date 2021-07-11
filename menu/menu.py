@@ -1,5 +1,8 @@
-from blessed import Terminal
+from pathlib import Path
+from typing import Union, Tuple, List
+
 from PIL import Image
+from blessed import Terminal
 
 # Constants
 IMAGE_WIDTH = 100
@@ -9,7 +12,7 @@ IMAGE_HEIGHT = 50
 # Text overlays have the same filepath, with "_overlay" appended
 # All images are .png files and are saved in a "Resources" directory
 # Images have a pixel size of 100x50
-MENU_IMAGE_PATH = 'menu'
+MENU_BASE_PATH = Path('menu')
 
 # Defines the options available on the menu
 MENU_TEXTS = ['Box packing', 'Files', 'Game', 'Settings']
@@ -31,17 +34,21 @@ OVERLAY_COLORS = {
 }
 
 
-def get_pixels(path: str) -> list:
+def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> list:
     """
     Gets the pixels of an image for the provided filepath, after resizing
 
     Returns: two-dimensional list of image pixels
     """
-    im = Image.open('Resources/' + path + '.png')
+    # convert what is potentially just a string into a real Path object
+    image_path = Path(image_path) if not isinstance(image_path, Path) else image_path
+    im = Image.open(image_path.as_posix())
+
     # Compensates for half-width pixels
     # Nearest-neighbor resizing is used because color clarity is needed
-    im = im.resize((IMAGE_WIDTH, IMAGE_HEIGHT), Image.NEAREST)
-    return [[im.getpixel((x, y)) for x in range(IMAGE_WIDTH)] for y in range(IMAGE_HEIGHT)]
+    im = im.resize(size, Image.NEAREST)
+    width, height = size
+    return [[im.getpixel((x, y)) for x in range(width)] for y in range(height)]
 
 
 def draw_image(terminal: Terminal, pixels: list) -> None:
@@ -99,8 +106,10 @@ def main() -> None:
     print(terminal.clear, end='')
     current_menu = 0
 
-    menu_pixels = get_pixels(MENU_IMAGE_PATH)
-    menu_text_pixels = get_pixels(MENU_IMAGE_PATH + '_overlay')
+    # size = (terminal.width, terminal.height)
+    size = (IMAGE_WIDTH * 2, IMAGE_HEIGHT)
+    menu_pixels = get_pixels(MENU_BASE_PATH / 'Resources' / 'menu.png', size)
+    menu_text_pixels = get_pixels(MENU_BASE_PATH / 'Resources' / 'menu_overlay.png', size)
     menu_text = get_text(menu_text_pixels)
     draw_image(terminal, menu_pixels)
     update_menu(terminal, current_menu, menu_text, menu_pixels)
