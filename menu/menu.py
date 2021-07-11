@@ -25,7 +25,9 @@ MENU_FUNCTIONS = {
 
 # Defines which text-overlay colors correspond to what
 OVERLAY_COLORS = {
-    (0, 0, 255, 255): MENU_TEXTS
+    (0, 0, 255, 255): MENU_TEXTS,
+    (255, 0, 0, 255): 'Left',
+    (0, 255, 0, 255): 'Right'
 }
 
 
@@ -80,7 +82,11 @@ def update_menu(terminal: Terminal, current_menu: int, menu_text: dict, menu_pix
     current_menu %= len(MENU_TEXTS)
     for color in menu_text:
         pixels = menu_text[color]
-        text = OVERLAY_COLORS[color][current_menu].center(len(pixels))
+        text_type = type(OVERLAY_COLORS[color])
+        if text_type == list:
+            text = OVERLAY_COLORS[color][current_menu].center(len(pixels))
+        else:
+            text = OVERLAY_COLORS[color].center(len(pixels))
         start = pixels[0]
         # Does not work with multi-colored backgrounds
         background_color = menu_pixels[start[1]][start[0]]
