@@ -51,14 +51,15 @@ def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> list:
     return [[im.getpixel((x, y)) for x in range(width)] for y in range(height)]
 
 
-def draw_image(terminal: Terminal, pixels: list) -> None:
+def draw_image(terminal: Terminal, pixels: List) -> None:
     """Draws the provided pixels to the terminal"""
-    for row in pixels:
-        line = ''
-        for pixel in row:
-            line += terminal.on_color_rgb(*pixel) + ' '
-        # print() is slow, which makes this method faster than printing each pixel individually
-        print(line + terminal.normal)
+    print('\n'.join(
+        ''.join(
+            terminal.on_color_rgb(*pixel) + ' '
+            for pixel in row
+        )
+        for row in pixels
+    ))
 
 
 def get_text(pixels: list) -> dict:
