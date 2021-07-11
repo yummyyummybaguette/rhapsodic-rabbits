@@ -14,64 +14,103 @@ MENU_IMAGE_PATH = 'menu'
 # Defines the options available on the menu
 MENU_TEXTS = ['Box packing', 'Files', 'Game', 'Settings']
 
+# Defines what function each menu option points to
+# TODO Create menu functions
+MENU_FUNCTIONS = {
+    'Box packing': None,
+    'Files': None,
+    'Game': None,
+    'Settings': None
+}
+
 # Defines which text-overlay colors correspond to what
 OVERLAY_COLORS = {
     (0, 0, 255, 255): MENU_TEXTS
 }
 
-def draw_image(terminal: Terminal, path: str) -> None:
+
+def get_pixels(path: str) -> list:
     """
-    Draws the provided image path to the terminal. Does not include text
+    Gets the pixels of an image for the provided filepath, after resizing
+
+    Returns: two-dimensional list of image pixels
     """
-    menu_image = Image.open('Resources/' + path + '.png')
-    pixels = [[menu_image.getpixel((x, y)) for x in range(IMAGE_WIDTH)] for y in range(IMAGE_HEIGHT)]
+    im = Image.open('Resources/' + path + '.png')
+    # Compensates for half-width pixels
+    # Nearest-neighbor resizing is used because color clarity is needed
+    im = im.resize((IMAGE_WIDTH * 2, IMAGE_HEIGHT), Image.NEAREST)
+    return [[im.getpixel((x, y)) for x in range(IMAGE_WIDTH * 2)] for y in range(IMAGE_HEIGHT)]
+
+
+def draw_image(terminal: Terminal, pixels: list) -> None:
+    """Draws the provided pixels to the terminal"""
     for row in pixels:
         line = ''
         for pixel in row:
-            # Double spaces to compensate for rectangular pixels
-            line += terminal.on_color_rgb(*pixel) + '  '
+            line += terminal.on_color_rgb(*pixel) + ' '
         # print() is slow, which makes this method faster than printing each pixel individually
         print(line + terminal.normal)
 
 
-def get_text(path: str) -> dict:
+def get_text(pixels: list) -> dict:
     """
-    Processes a text overlay
+    Processes a text overlay from the provided pixels
+
     Returns: dictionary of colors (as tuples) and their coordinates
     """
-    text_image = Image.open('Resources/' + path + '_overlay.png')
-    # Compensates for double-width pixels
-    # Nearest-neighbor resizing is used because color clarity is needed
-    text_image = text_image.resize((IMAGE_WIDTH * 2, IMAGE_HEIGHT), Image.NEAREST)
-    pixels = [[text_image.getpixel((x, y)) for x in range(IMAGE_WIDTH * 2)] for y in range(IMAGE_HEIGHT)]
     out = {}
-    for x in range(IMAGE_WIDTH * 2):
-        for y in range(IMAGE_HEIGHT):
-            pixel = pixels[y][x]
-            #If pixel is not white
+    for y, row in enumerate(pixels):
+        for x, pixel in enumerate(row):
+            # If pixel is not white
             if pixel != (255, 255, 255, 255):
                 if pixel in out:
                     out[pixel].append((x, y))
                     continue
                 out[pixel] = [(x, y)]
     return out
-    
+
+
+def update_menu(terminal: Terminal, current_menu: int, menu_text: dict, menu_pixels: list) -> None:
+    """
+    Updates the text of the menu
+
+    Does not redraw each pixel of the menu, just the text
+    """
+    # Loops the menu back on itself
+    current_menu %= len(MENU_TEXTS)
+    for color in menu_text:
+        pixels = menu_text[color]
+        text = OVERLAY_COLORS[color][current_menu].center(len(pixels))
+        start = pixels[0]
+        # Does not work with multi-colored backgrounds
+        background_color = menu_pixels[start[1]][start[0]]
+        print(terminal.move_xy(*start) + terminal.on_color_rgb(*background_color) + terminal.black(text))
+
 
 def main() -> None:
+    """Creates basic menu functionality"""
     terminal = Terminal()
-    print(terminal.clear)
-    draw_image(terminal, MENU_IMAGE_PATH)
-    menu_text = get_text(MENU_IMAGE_PATH)
-
+    print(terminal.clear, end='')
     current_menu = 0
 
-    for color in menu_text:
-        coordinates = menu_text[color]
-        text_width = coordinates[-1][0] - coordinates[0][0]
-        text = OVERLAY_COLORS[color][current_menu].center(text_width)
-        # Will be replaced with background checking later
-        print(terminal.move_xy(*coordinates[0]) + terminal.black_on_bright_white(text), end='')
-    
+    menu_pixels = get_pixels(MENU_IMAGE_PATH)
+    menu_text_pixels = get_pixels(MENU_IMAGE_PATH + '_overlay')
+    menu_text = get_text(menu_text_pixels)
+    draw_image(terminal, menu_pixels)
+    update_menu(terminal, current_menu, menu_text, menu_pixels)
+    # Control loop
+    with terminal.cbreak():
+        key = terminal.inkey(timeout=0)
+        while key.name != 'KEY_ESCAPE':
+            key = terminal.inkey(timeout=0)
+            if key.name == 'KEY_LEFT':
+                current_menu -= 1
+                update_menu(terminal, current_menu, menu_text, menu_pixels)
+            elif key.name == 'KEY_RIGHT':
+                current_menu += 1
+                update_menu(terminal, current_menu, menu_text, menu_pixels)
+        print(terminal.clear + 'Exiting!', end='')
+
 
 if __name__ == '__main__':
     main()
