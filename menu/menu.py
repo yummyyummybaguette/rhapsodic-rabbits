@@ -34,9 +34,44 @@ OVERLAY_COLORS = {
 }
 
 
+class Menu:
+    def __init__(self,
+                 terminal: Terminal,
+                 background: Union[str, Path],
+                 size: Tuple[int, int] = (IMAGE_WIDTH, IMAGE_HEIGHT)):
+        self.terminal: Terminal = terminal
+        size = (size[0] * 2, size[1])
+        self.background_pixels = get_pixels(background, size)
+        overlay_path = background.with_name(f'{background.stem}_overlay{background.suffix}')
+        self.text_pixels = get_pixels(overlay_path, size)
+        self.overlay_positions = color_positions(self.text_pixels)
+        self.selection = 0
+        self.draw_background()
+        self.draw_menu_text()
+
+    def draw_background(self):
+        draw_image(self.terminal, self.background_pixels)
+
+    def draw_menu_text(self):
+        for color, text in OVERLAY_COLORS.items():
+            if isinstance(text, list):
+                text = MENU_TEXTS[self.selection % len(MENU_TEXTS)]
+            coords = self.overlay_positions[color]
+            text = text.center(len(coords))
+            backgrounds = (self.get_color(x, y) for x, y in coords)
+            res = self.terminal.move_xy(*coords[0])
+            res += ''.join(
+                self.terminal.on_color_rgb(*bg) + self.terminal.black(char)
+                for char, bg in zip(text, backgrounds)
+            )
+            print(res)
+
+    def get_color(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        return self.background_pixels[y][x]
+
 def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> List[List[Tuple[int, int, int, int]]]:
     """
-    Gets the pixels of an image for the provided image_path, after resizing
+    Gets the pixels of an image for the provided background, after resizing
 
     Returns: List[List[Tuple[int, int, int, int]]]
         two-dimensional list of image pixels
@@ -81,55 +116,26 @@ def color_positions(pixels: List[List[Tuple[int, int, int, int]]]) -> Dict[Tuple
     return out
 
 
-def update_menu(terminal: Terminal,
-                menu_selection: int,
-                menu_text: Dict[Tuple[int, int, int, int], List[Tuple[int, int]]],
-                menu_pixels: List) -> None:
-    """
-    Updates the text of the menu
-
-    Does not redraw each pixel of the menu, just the text
-    """
-    # Loops the menu back on itself
-    menu_selection %= len(MENU_TEXTS)
-    # for each color in the overlay
-    for color, coords in menu_text.items():
-        # if overlay color corresponds to the list of menu options
-        if isinstance(OVERLAY_COLORS[color], list):
-            text = OVERLAY_COLORS[color][menu_selection].center(len(coords))
-        else:
-            text = OVERLAY_COLORS[color].center(len(coords))
-        start = coords[0]
-        # Does not work with multi-colored backgrounds
-        background_color = menu_pixels[start[1]][start[0]]
-        print(terminal.move_xy(*start) + terminal.on_color_rgb(*background_color) + terminal.black(text))
-
-
 def main() -> None:
     """Creates basic menu functionality"""
     terminal = Terminal()
     print(terminal.clear, end='')
-    current_menu = 0
-
-    # size = (terminal.width, terminal.height)
-    size = (IMAGE_WIDTH * 2, IMAGE_HEIGHT)
-    menu_pixels = get_pixels(MENU_BASE_PATH / 'Resources' / 'menu.png', size)
-    menu_text_pixels = get_pixels(MENU_BASE_PATH / 'Resources' / 'menu_overlay.png', size)
-    menu_text = color_positions(menu_text_pixels)
-    draw_image(terminal, menu_pixels)
-    update_menu(terminal, current_menu, menu_text, menu_pixels)
-    # Control loop
+    terminal = Terminal()
+    m = Menu(
+        terminal,
+        MENU_BASE_PATH / 'Resources' / 'menu.png',
+    )
     with terminal.cbreak():
         key = terminal.inkey(timeout=0)
         while key.name != 'KEY_ESCAPE':
             key = terminal.inkey(timeout=0)
             if key.name == 'KEY_LEFT':
-                current_menu -= 1
-                update_menu(terminal, current_menu, menu_text, menu_pixels)
+                m.selection -= 1
+                m.draw_menu_text()
             elif key.name == 'KEY_RIGHT':
-                current_menu += 1
-                update_menu(terminal, current_menu, menu_text, menu_pixels)
-        print(terminal.clear + 'Exiting!', end='')
+                m.selection += 1
+                m.draw_menu_text()
+    print(terminal.clear + 'Exiting!', end='')
 
 
 if __name__ == '__main__':
