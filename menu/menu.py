@@ -14,9 +14,6 @@ IMAGE_HEIGHT = 50
 # Images have a pixel size of 100x50
 MENU_BASE_PATH = Path('menu')
 
-# Defines the options available on the menu
-MENU_TEXTS = ['Box packing', 'Files', 'Game', 'Settings']
-
 # Defines what function each menu option points to
 # TODO Create menu functions
 MENU_FUNCTIONS = {
@@ -25,6 +22,9 @@ MENU_FUNCTIONS = {
     'Game': None,
     'Settings': None
 }
+
+# Defines the options available on the menu
+MENU_TEXTS = list(MENU_FUNCTIONS.keys())
 
 # Defines which text-overlay colors correspond to what
 OVERLAY_COLORS = {
@@ -50,7 +50,13 @@ class Menu:
         self.draw_menu_text()
 
     def draw_background(self):
-        draw_image(self.terminal, self.background_pixels)
+        if not hasattr(self, 'origin'):
+            self.origin = self.terminal.get_location()
+        else:
+            self.terminal.move_xy(*self.origin)
+
+        with self.terminal.location():
+            draw_image(self.terminal, self.background_pixels)
 
     def draw_menu_text(self):
         for color, text in OVERLAY_COLORS.items():
@@ -59,7 +65,11 @@ class Menu:
             coords = self.overlay_positions[color]
             text = text.center(len(coords))
             backgrounds = (self.get_color(x, y) for x, y in coords)
-            res = self.terminal.move_xy(*coords[0])
+
+            start_x, start_y = self.origin
+            offset_x, offset_y = coords[0]
+
+            res = self.terminal.move_xy(x=start_x+offset_x, y=start_y+offset_y)
             res += ''.join(
                 self.terminal.on_color_rgb(*bg) + self.terminal.black(char)
                 for char, bg in zip(text, backgrounds)
@@ -124,6 +134,7 @@ def main() -> None:
     m = Menu(
         terminal,
         MENU_BASE_PATH / 'Resources' / 'menu.png',
+        # size=(50, 25)
     )
     with terminal.cbreak():
         key = terminal.inkey(timeout=0)
