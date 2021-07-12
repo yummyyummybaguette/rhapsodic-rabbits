@@ -1,8 +1,8 @@
 from pathlib import Path
-from typing import Union, Tuple, List, Dict
+from typing import Dict, List, Tuple, Union
 
-from PIL import Image
 from blessed import Terminal
+from PIL import Image
 
 # Constants
 IMAGE_WIDTH = 100
@@ -35,6 +35,12 @@ OVERLAY_COLORS = {
 
 
 class Menu:
+    """Graphical menu for terminal windows
+
+    Renders pre-existing images in a terminal window.
+    Overlays text on the menu using colors in another pre-existing image to determine the text locations
+    """
+
     def __init__(self,
                  terminal: Terminal,
                  background: Union[str, Path],
@@ -49,7 +55,8 @@ class Menu:
         self.draw_background()
         self.draw_menu_text()
 
-    def draw_background(self):
+    def draw_background(self) -> None:
+        """Renders the background image in the terminal"""
         if not hasattr(self, 'origin'):
             self.origin = self.terminal.get_location()
         else:
@@ -58,7 +65,8 @@ class Menu:
         with self.terminal.location():
             draw_image(self.terminal, self.background_pixels)
 
-    def draw_menu_text(self):
+    def draw_menu_text(self) -> None:
+        """Overlays text on the background image using colors in the overlay image"""
         for color, text in OVERLAY_COLORS.items():
             if isinstance(text, list):
                 text = MENU_TEXTS[self.selection % len(MENU_TEXTS)]
@@ -77,7 +85,9 @@ class Menu:
             print(res)
 
     def get_color(self, x: int, y: int) -> Tuple[int, int, int, int]:
+        """Gets the 4 number color Tuple at given coordinates in the rendered background image"""
         return self.background_pixels[y][x]
+
 
 def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> List[List[Tuple[int, int, int, int]]]:
     """
@@ -107,7 +117,9 @@ def draw_image(terminal: Terminal, pixels: List[List[Tuple[int, int, int, int]]]
     ))
 
 
-def color_positions(pixels: List[List[Tuple[int, int, int, int]]]) -> Dict[Tuple[int, int, int, int], List[Tuple[int, int]]]:
+def color_positions(
+        pixels: List[List[Tuple[int, int, int, int]]]
+) -> Dict[Tuple[int, int, int, int], List[Tuple[int, int]]]:
     """
     Processes a text overlay from the provided pixels
 
