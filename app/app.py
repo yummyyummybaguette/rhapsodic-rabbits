@@ -1,8 +1,9 @@
+from pathlib import Path
 from typing import Tuple
 
 from blessed import Terminal
 
-from menu.menu import MENU_BASE_PATH, Menu
+from menu import Menu
 
 TUI_WIDTH = 100
 TUI_HEIGHT = 50
@@ -16,7 +17,7 @@ class InsideTheBoxTUI:
         print(self.terminal.clear, end='')
         self.menu = Menu(
             terminal=self.terminal,
-            background=(MENU_BASE_PATH / 'Resources' / 'menu.png'),
+            background=Path('resources') / 'menu.png',
             size=size
         )
 
@@ -25,11 +26,12 @@ class InsideTheBoxTUI:
         with self.terminal.cbreak():
             while (key := self.terminal.inkey(timeout=0)).name != 'KEY_ESCAPE':
                 if key.name == 'KEY_LEFT':
-                    self.menu.selection -= 1
-                    self.menu.draw_menu_text()
+                    self.menu.decrement()
                 elif key.name == 'KEY_RIGHT':
-                    self.menu.selection += 1
-                    self.menu.draw_menu_text()
+                    self.menu.increment()
+                elif key.name == 'KEY_ENTER':
+                    with self.terminal.location():
+                        print(self.menu.selection)
         self.exit()
 
     def exit(self) -> None:

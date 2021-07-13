@@ -1,37 +1,12 @@
 from pathlib import Path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union, Any
 
-from blessed import Terminal
 from PIL import Image
+from blessed import Terminal
 
 # Constants
 IMAGE_WIDTH = 100
 IMAGE_HEIGHT = 50
-
-# Filepaths for images
-# Text overlays have the same filepath, with "_overlay" appended
-# All images are .png files and are saved in a "Resources" directory
-# Images have a pixel size of 100x50
-MENU_BASE_PATH = Path('menu')
-
-# Defines what function each menu option points to
-# TODO Create menu functions
-MENU_FUNCTIONS = {
-    'Box packing': None,
-    'Files': None,
-    'Game': None,
-    'Settings': None
-}
-
-# Defines the options available on the menu
-MENU_TEXTS = list(MENU_FUNCTIONS.keys())
-
-# Defines which text-overlay colors correspond to what
-OVERLAY_COLORS = {
-    (0, 0, 255, 255): MENU_TEXTS,
-    (255, 0, 0, 255): 'Left',
-    (0, 255, 0, 255): 'Right'
-}
 
 
 class Menu:
@@ -40,6 +15,23 @@ class Menu:
     Renders pre-existing images in a terminal window.
     Overlays text on the menu using colors in another pre-existing image to determine the text locations
     """
+
+    # Defines what function each menu option points to
+    # TODO Create menu functions
+    opts = {
+        'Box packing': None,
+        'Files': None,
+        'Game': None,
+        'Settings': None
+    }
+    texts = list(opts.keys())
+
+    # Defines which text-overlay colors correspond to what
+    overlay_colors = {
+        (0, 0, 255, 255): texts,
+        (255, 0, 0, 255): 'Left',
+        (0, 255, 0, 255): 'Right'
+    }
 
     def __init__(self,
                  terminal: Terminal,
@@ -51,7 +43,7 @@ class Menu:
         overlay_path = background.with_name(f'{background.stem}_overlay{background.suffix}')
         self.text_pixels = get_pixels(overlay_path, size)
         self.overlay_positions = color_positions(self.text_pixels)
-        self.selection = 0
+        self.num = 0
         self.draw_background()
         self.draw_menu_text()
 
@@ -67,9 +59,9 @@ class Menu:
 
     def draw_menu_text(self) -> None:
         """Overlays text on the background image using colors in the overlay image"""
-        for color, text in OVERLAY_COLORS.items():
+        for color, text in self.overlay_colors.items():
             if isinstance(text, list):
-                text = MENU_TEXTS[self.selection % len(MENU_TEXTS)]
+                text = self.texts[self.num % len(self.texts)]
             coords = self.overlay_positions[color]
             text = text.center(len(coords))
             backgrounds = (self.get_color(x, y) for x, y in coords)
@@ -87,6 +79,18 @@ class Menu:
     def get_color(self, x: int, y: int) -> Tuple[int, int, int, int]:
         """Gets the 4 number color Tuple at given coordinates in the rendered background image"""
         return self.background_pixels[y][x]
+
+    def increment(self) -> None:
+        self.num -= 1
+        self.draw_menu_text()
+
+    def decrement(self) -> None:
+        self.num += 1
+        self.draw_menu_text()
+
+    @property
+    def selection(self) -> Any:
+        return self.opts[self.texts[self.num % len(self.texts)]]
 
 
 def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> List[List[Tuple[int, int, int, int]]]:
@@ -136,30 +140,3 @@ def color_positions(
                     continue
                 out[pixel] = [(x, y)]
     return out
-
-
-def main() -> None:
-    """Creates basic menu functionality"""
-    terminal = Terminal()
-    print(terminal.clear, end='')
-    terminal = Terminal()
-    m = Menu(
-        terminal,
-        MENU_BASE_PATH / 'Resources' / 'menu.png',
-        # size=(50, 25)
-    )
-    with terminal.cbreak():
-        key = terminal.inkey(timeout=0)
-        while key.name != 'KEY_ESCAPE':
-            key = terminal.inkey(timeout=0)
-            if key.name == 'KEY_LEFT':
-                m.selection -= 1
-                m.draw_menu_text()
-            elif key.name == 'KEY_RIGHT':
-                m.selection += 1
-                m.draw_menu_text()
-    print(terminal.clear + 'Exiting!', end='')
-
-
-if __name__ == '__main__':
-    main()
