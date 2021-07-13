@@ -2,23 +2,24 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-# Create rotations list
-rotations_list = [0, 1, 0]
-
-# Create starts list for each box
-starts_list = [[0, 1, 0], [3, 0, 0], [0, 0, 0]]
-
-# Create list of dimensions of each package
-packages_list = [[2, 3, 4], [4, 1, 2], [3, 1, 2]]
-
-colors_list = ["blue", "orange", "green"]
-
-BOX_ALPHA = 0.3
 
 # Box dimensions for the box the packages fit into
 width = 4
 height = 4
 depth = 4
+
+# Create list of dimensions of each package
+packages_list = [[2, 3, 4], [4, 1, 2], [3, 1, 2]]
+
+# Create rotations list
+rotations_list = [0, 1, 0]
+
+# 
+positions_list = [[0, 1, 0], [3, 0, 0], [0, 0, 0]]
+
+colors_list = ["blue", "orange", "green"]
+
+BOX_ALPHA = 0.3
 
 fig = plt.figure()
 ax = plt.axes(projection='3d')
@@ -31,7 +32,7 @@ ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
 ax.plot3D([0, width], [height, height], [depth, depth], color="red")
 
 # Plot packages
-for package, rotation, start, color in zip(packages_list, rotations_list, starts_list, colors_list):
+for package, rotation, position, color in zip(packages_list, rotations_list, positions_list, colors_list):
     r = rotation
     w = package[0]
     h = package[1]
@@ -50,50 +51,50 @@ for package, rotation, start, color in zip(packages_list, rotations_list, starts
         h = dt
         d = wt
     elif r == 3:
-        w = ht
-        h = wt
-        d = dt
-    elif r == 4:
         w = dt
         h = wt
         d = ht
+    elif r == 4:
+        w = dt
+        h = ht
+        d = wt
     elif r == 5:
         w = wt
         h = dt
         d = ht
 
-    startx = start[0]
-    starty = start[1]
-    startz = start[2]
+    position_x = position[0]
+    position_y = position[1]
+    position_z = position[2]
 
-    x = [0 + startx, 0 + startx, 0 + startx, 0 + startx]
-    y = [0 + starty, h + starty, h + starty, 0 + starty]
-    z = [0 + startz, 0 + startz, d + startz, d + startz]
+    x = [0 + position_x, 0 + position_x, 0 + position_x, 0 + position_x]
+    y = [0 + position_y, h + position_y, h + position_y, 0 + position_y]
+    z = [0 + position_z, 0 + position_z, d + position_z, d + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-    x = [0 + startx, w + startx, w + startx, 0 + startx]
-    y = [0 + starty, 0 + starty, h + starty, h + starty]
-    z = [0 + startz, 0 + startz, 0 + startz, 0 + startz]
+    x = [0 + position_x, w + position_x, w + position_x, 0 + position_x]
+    y = [0 + position_y, 0 + position_y, h + position_y, h + position_y]
+    z = [0 + position_z, 0 + position_z, 0 + position_z, 0 + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-    x = [w + startx, w + startx, w + startx, w + startx]
-    y = [0 + starty, 0 + starty, h + starty, h + starty]
-    z = [0 + startz, d + startz, d + startz, 0 + startz]
+    x = [w + position_x, w + position_x, w + position_x, w + position_x]
+    y = [0 + position_y, 0 + position_y, h + position_y, h + position_y]
+    z = [0 + position_z, d + position_z, d + position_z, 0 + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-    x = [0 + startx, w + startx, w + startx, 0 + startx]
-    y = [0 + starty, 0 + starty, h + starty, h + starty]
-    z = [d + startz, d + startz, d + startz, d + startz]
+    x = [0 + position_x, w + position_x, w + position_x, 0 + position_x]
+    y = [0 + position_y, 0 + position_y, h + position_y, h + position_y]
+    z = [d + position_z, d + position_z, d + position_z, d + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-    x = [0 + startx, w + startx, w + startx, 0 + startx]
-    y = [0 + starty, 0 + starty, 0 + starty, 0 + starty]
-    z = [d + startz, d + startz, 0 + startz, 0 + startz]
+    x = [0 + position_x, w + position_x, w + position_x, 0 + position_x]
+    y = [0 + position_y, 0 + position_y, 0 + position_y, 0 + position_y]
+    z = [d + position_z, d + position_z, 0 + position_z, 0 + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-    x = [0 + startx, w + startx, w + startx, 0 + startx]
-    y = [h + starty, h + starty, h + starty, h + starty]
-    z = [d + startz, d + startz, 0 + startz, 0 + startz]
+    x = [0 + position_x, w + position_x, w + position_x, 0 + position_x]
+    y = [h + position_y, h + position_y, h + position_y, h + position_y]
+    z = [d + position_z, d + position_z, 0 + position_z, 0 + position_z]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
 
@@ -101,7 +102,7 @@ for package, rotation, start, color in zip(packages_list, rotations_list, starts
 ax.axes.set_xlim3d(left=0.0, right=width)
 ax.axes.set_ylim3d(bottom=0, top=height)
 ax.axes.set_zlim3d(bottom=0, top=depth)
-ax.set_box_aspect((width, height, depth))
+ax.set_box_aspect((width, 1.1*height, depth))
 plt.axis('off')
 fig.show()
 
