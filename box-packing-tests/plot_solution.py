@@ -2,23 +2,35 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-
 # Create rotations list
-rotations_list = [0, 0, 2]
+rotations_list = [0, 1, 0]
 
 # Create starts list for each box
-starts_list = [[0, 0, 0], [1, 0, 0], [0, 0, 1]]
+starts_list = [[0, 1, 0], [3, 0, 0], [0, 0, 0]]
 
 # Create list of dimensions of each package
-packages_list = [[1, 2, 1], [2, 3, 1], [2, 2, 3]]
+packages_list = [[2, 3, 4], [4, 1, 2], [3, 1, 2]]
 
 colors_list = ["blue", "orange", "green"]
 
 BOX_ALPHA = 0.3
 
+# Box dimensions for the box the packages fit into
+width = 4
+height = 4
+depth = 4
+
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+
+# Plot main box, some reason it does not plot as the top layer
+ax.plot3D([0, 0, 0, 0, 0], [0, height, height, 0, 0], [0, 0, depth, depth, 0], color="red")
+ax.plot3D([0, width, width, 0], [0, 0, height, height], [0, 0, 0, 0], color="red")
+ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth, 0], color="red")
+ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
+ax.plot3D([0, width], [height, height], [depth, depth], color="red")
+
+# Plot packages
 for package, rotation, start, color in zip(packages_list, rotations_list, starts_list, colors_list):
     r = rotation
     w = package[0]
@@ -84,18 +96,6 @@ for package, rotation, start, color in zip(packages_list, rotations_list, starts
     z = [d + startz, d + startz, 0 + startz, 0 + startz]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
-
-# Box dimensions for the box the packages fit into
-width = 3
-height = 3
-depth = 3
-
-# Plot main box, some reason it does not plot as the top layer
-ax.plot3D([0, 0, 0, 0, 0], [0, height, height, 0, 0], [0, 0, depth, depth, 0], color="red")
-ax.plot3D([0, width, width, 0], [0, 0, height, height], [0, 0, 0, 0], color="red")
-ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth, 0], color="red")
-ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
-ax.plot3D([0, width], [height, height], [depth, depth], color="red")
 
 # ax.add_collection3d(Poly3DCollection(verts))
 ax.axes.set_xlim3d(left=0.0, right=width)
