@@ -2,19 +2,9 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-# Box dimensions for the box the packages fit into
-width = 3
-height = 3
-depth = 3
 
 fig = plt.figure()
-ax = plt.axes(projection='3d', alpha=1.0)
-
-ax.plot3D([0, 0, 0, 0, 0], [0, height, height, 0, 0], [0, 0, depth, depth, 0], color="red")
-ax.plot3D([0, width, width, 0], [0, 0, height, height], [0, 0, 0, 0], color="red")
-ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth, 0], color="red")
-ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
-ax.plot3D([0, width], [height, height], [depth, depth], color="red")
+ax = plt.axes(projection='3d')
 
 # Create rotations list
 rotations_list = [0, 0, 2]
@@ -94,6 +84,18 @@ for package, rotation, start, color in zip(packages_list, rotations_list, starts
     z = [d + startz, d + startz, 0 + startz, 0 + startz]
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
+
+# Box dimensions for the box the packages fit into
+width = 3
+height = 3
+depth = 3
+
+# Plot main box, some reason it does not plot as the top layer
+ax.plot3D([0, 0, 0, 0, 0], [0, height, height, 0, 0], [0, 0, depth, depth, 0], color="red")
+ax.plot3D([0, width, width, 0], [0, 0, height, height], [0, 0, 0, 0], color="red")
+ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth, 0], color="red")
+ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
+ax.plot3D([0, width], [height, height], [depth, depth], color="red")
 
 # ax.add_collection3d(Poly3DCollection(verts))
 ax.axes.set_xlim3d(left=0.0, right=width)
