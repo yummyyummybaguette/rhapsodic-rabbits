@@ -20,8 +20,7 @@ BOX_LIST = [
 
 
 def get_packages() -> Tuple[List, int]:
-    """Gets the package sizes from the user
-    and calculates the total volume of the packages
+    """Get the package sizes and calculate total volume of packages
 
     Returns: packages_list and volume of packages
     """
