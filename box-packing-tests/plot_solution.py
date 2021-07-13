@@ -2,6 +2,7 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+# This code is to test the algorithm from the py3dbp package
 
 # Box dimensions for the box the packages fit into
 width = 5
