@@ -42,9 +42,9 @@ for package, rotation, start, color in zip(packages_list, rotations_list, starts
         ht = h
         dt = d
     if r == 1:
-        w = dt
-        h = ht
-        d = wt
+        w = ht
+        h = wt
+        d = dt
     elif r == 2:
         w = ht
         h = dt
