@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-width = 5
-height = 5
-depth = 5
+width = 3
+height = 4
+depth = 3
 
 
 fig = plt.figure()
@@ -18,7 +18,7 @@ ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth
 ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
 ax.plot3D([0, width], [height, height], [depth, depth], color="red")
 
-r = 3
+r = 0
 
 w = 1
 h = 2
@@ -85,9 +85,9 @@ ax.add_collection3d(Poly3DCollection(verts, color="blue", alpha=0.2))
 ax.axes.set_xlim3d(left=0.0, right=width) 
 ax.axes.set_ylim3d(bottom=0, top=height) 
 ax.axes.set_zlim3d(bottom=0, top=depth)
-ax.set_box_aspect((1, 1.1, 1))  # xy aspect ratio is 1:1, but stretches z axis
+ax.set_box_aspect((width, height, depth))  # xy aspect ratio is 1:1, but stretches z axis
 #plt.grid(False)
-plt.axis('off')
+#plt.axis('off')
 fig.show()
 
 input("press to continue")

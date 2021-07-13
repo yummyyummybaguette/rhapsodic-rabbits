@@ -27,7 +27,7 @@ def get_packages():
         width = int(input("Width? ")) 
         height = int(input("Height? "))
         depth= int(input("Depth? "))
-        total_volume += (width * height * width)
+        total_volume += (width * height * depth)
         packages_list.append({"name": str(i), "width": width, "height": height, "depth": depth})
     return (packages_list, total_volume)
 
