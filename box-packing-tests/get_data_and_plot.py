@@ -4,13 +4,18 @@ from typing import List, Tuple
 from py3dbp import Bin, Item, Packer
 
 # All dimensions are in inches
-box_list = [
-    Bin('small_0', 3, 3, 3, 100),
-    Bin('small_1', 3, 4, 3, 100),
-    Bin('small_2', 4, 4, 4, 100),
-    Bin('small_3', 5, 5, 5, 100),
-    Bin('medium', 6, 6, 6, 100),
-    Bin('large', 7, 7, 7, 100)
+BOX_LIST = [
+    Bin('0', 3, 3, 3, 100),
+    Bin('1', 3, 4, 3, 100),
+    Bin('2', 4, 4, 4, 100),
+    Bin('3', 5, 5, 6, 100),
+    Bin('4', 6, 6, 6, 100),
+    Bin('6', 7, 7, 8, 100),
+    Bin('7', 7, 9, 7, 100),
+    Bin('8', 8, 8, 8, 100),
+    Bin('9', 8, 9, 8, 100),
+    Bin('10', 9, 10, 12, 100),
+    Bin('11', 12, 18, 6, 100)
 ]
 
 
@@ -39,7 +44,7 @@ def get_packages() -> Tuple[List, int]:
 
 packages, packages_volume = get_packages()
 
-for box in box_list:
+for box in BOX_LIST:
     packer = Packer()
     packer.add_bin(box)
     for package in packages:
@@ -80,7 +85,11 @@ for item in box.items:
     positions_list.append(position)
     rotations_list.append(item.rotation_type)
 
-colors_list = ["blue", "orange", "green", "brown", "purple"]
+colors_list = ["blue",
+               "orange",
+               "green",
+               "brown",
+               "purple"]
 
 BOX_ALPHA = 0.3
 
@@ -187,7 +196,7 @@ ax.axes.set_xlim3d(left=0, right=width)
 ax.axes.set_ylim3d(bottom=0, top=height)
 ax.axes.set_zlim3d(bottom=0, top=depth)
 ax.set_box_aspect((width, 1.1*height, depth))
-# plt.axis('off')
+plt.axis('off')
 fig.show()
 
 input("press to continue")
