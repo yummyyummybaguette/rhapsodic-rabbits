@@ -18,11 +18,11 @@ ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth
 ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
 ax.plot3D([0, width], [height, height], [depth, depth], color="red")
 
-r = 0
+r = 2
 
 w = 1
 h = 2
-d = 3
+d = 4
 
 if r != 0:
     wt = w
@@ -34,6 +34,7 @@ if r == 1:
 elif r == 2:
     d = wt
     h = dt
+    w = ht
 elif r == 3:
     w = ht
     h = wt
@@ -81,11 +82,82 @@ z = [d + startz, d + startz, 0 + startz, 0 + startz]
 verts = [list(zip(x, y, z))]
 ax.add_collection3d(Poly3DCollection(verts, color="blue", alpha=0.2))
 
+
+# try second box
+r = 5
+
+w = 3
+h = 2
+d = 4
+
+if r != 0:
+    wt = w
+    ht = h
+    dt = d
+if r == 1:
+    d = wt
+    w = dt
+elif r == 2:
+    w = ht
+    h = dt
+    d = wt
+elif r == 3:
+    d = wt
+    h = dt
+    w = ht
+elif r == 4:
+    w = dt
+    h = wt
+    d = ht
+elif r == 5:
+    w = wt
+    h = dt
+    d = ht
+
+
+startx = 0
+starty = 0
+startz = 1
+
+x = [0 + startx, 0 + startx, 0 + startx, 0 + startx]
+y = [0 + starty, h + starty, h + starty, 0 + starty]
+z = [0 + startz, 0 + startz, d + startz, d + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+x = [0 + startx, w + startx, w + startx, 0 + startx]
+y = [0 + starty, 0 + starty, h + starty, h + starty]
+z = [0 + startz, 0 + startz, 0 + startz, 0 + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+x = [w + startx, w + startx, w + startx, w + startx]
+y = [0 + starty, 0 + starty, h + starty, h + starty]
+z = [0 + startz, d + startz, d + startz, 0 + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+x = [0 + startx, w + startx, w + startx, 0 + startx]
+y = [0 + starty, 0 + starty, h + starty, h + starty]
+z = [d + startz, d + startz, d + startz, d + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+x = [0 + startx, w + startx, w + startx, 0 + startx]
+y = [0 + starty, 0 + starty, 0 + starty, 0 + starty]
+z = [d + startz, d + startz, 0 + startz, 0 + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+x = [0 + startx, w + startx, w + startx, 0 + startx]
+y = [h + starty, h + starty, h + starty, h + starty]
+z = [d + startz, d + startz, 0 + startz, 0 + startz]
+verts = [list(zip(x, y, z))]
+ax.add_collection3d(Poly3DCollection(verts, color="orange", alpha=0.2))
+
+# end second box
+
+
 # ax.add_collection3d(Poly3DCollection(verts))
 ax.axes.set_xlim3d(left=0.0, right=width) 
 ax.axes.set_ylim3d(bottom=0, top=height) 
 ax.axes.set_zlim3d(bottom=0, top=depth)
-ax.set_box_aspect((width, height, depth))  # xy aspect ratio is 1:1, but stretches z axis
+ax.set_box_aspect((width, height, depth))  
 #plt.grid(False)
 #plt.axis('off')
 fig.show()
