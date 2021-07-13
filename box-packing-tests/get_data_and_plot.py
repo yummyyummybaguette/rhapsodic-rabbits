@@ -72,14 +72,10 @@ print(f'Volume of packages: {packages_volume} cubic inches')
 print(" ")
 for item in box.items:
     print(item.string())
-
     print(item.position)
-    # Create position list for plot
+    print(item.rotation_type)
     position = [float(i) for i in item.position]
     positions_list.append(position)
-
-    print(item.rotation_type)
-    # Create rotations list for plot
     rotations_list.append(item.rotation_type)
 
 colors_list = ["blue", "orange", "green", "brown", "purple"]
