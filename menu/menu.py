@@ -77,7 +77,7 @@ class Menu:
             start_x, start_y = self.origin
             offset_x, offset_y = coords[0]
 
-            res = self.terminal.move_xy(x=start_x+offset_x, y=start_y+offset_y)
+            res = self.terminal.move_xy(x=start_x + offset_x, y=start_y + offset_y)
             res += ''.join(
                 self.terminal.on_color_rgb(*bg) + self.terminal.black(char)
                 for char, bg in zip(text, backgrounds)
