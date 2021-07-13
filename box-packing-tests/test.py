@@ -1,4 +1,6 @@
 from py3dbp import Packer, Bin, Item
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 # All dimensions are in inches
 box_list = [
@@ -7,7 +9,7 @@ box_list = [
     Bin('small_2', 4, 4, 4, 100),
     Bin('small_3', 5, 5, 5, 100),
     Bin('medium', 6, 6, 6, 100),
-    Bin('large', 7, 7, 7, 100)
+    Bin('large', 7, 7, 7, 100)   
 ]
 
 def get_packages():
@@ -48,3 +50,23 @@ print(box.name)
 print(f'Volume of box: {box.width * box.height * box.depth} cubic inches')
 print(f'Volume of packages: {packages_volume} cubic inches')
 print(" ")
+for item in box.items:
+    print(item.string())
+    print(item.position)
+    print(item.rotation_type)
+
+
+"""
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+x = [0,1,1,0]
+y = [0,0,1,1]
+z = [0,1,0,1]
+verts = [list(zip(x,y,z))]
+ax.add_collection3d(Poly3DCollection(verts))
+
+
+fig.show()
+
+input("press to continue")
+"""
