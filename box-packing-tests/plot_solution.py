@@ -25,14 +25,32 @@ fig = plt.figure()
 ax = plt.axes(projection='3d')
 
 # Plot main box, some reason it does not plot as the top layer
-ax.plot3D([0, 0, 0, 0, 0], [0, height, height, 0, 0], [0, 0, depth, depth, 0], color="red")
-ax.plot3D([0, width, width, 0], [0, 0, height, height], [0, 0, 0, 0], color="red")
-ax.plot3D([width, width, width, width], [0, 0, height, height], [0, depth, depth, 0], color="red")
-ax.plot3D([0, width], [0, 0], [depth, depth], color="red")
-ax.plot3D([0, width], [height, height], [depth, depth], color="red")
+ax.plot3D([0, 0, 0, 0, 0],
+          [0, height, height, 0, 0],
+          [0, 0, depth, depth, 0],
+          color="red")
+ax.plot3D([0, width, width, 0],
+          [0, 0, height, height],
+          [0, 0, 0, 0],
+          color="red")
+ax.plot3D([width, width, width, width],
+          [0, 0, height, height],
+          [0, depth, depth, 0],
+          color="red")
+ax.plot3D([0, width],
+          [0, 0],
+          [depth, depth],
+          color="red")
+ax.plot3D([0, width],
+          [height, height],
+          [depth, depth],
+          color="red")
 
 # Plot packages
-for package, rotation, position, color in zip(packages_list, rotations_list, positions_list, colors_list):
+for package, rotation, position, color in zip(packages_list,
+                                              rotations_list,
+                                              positions_list,
+                                              colors_list):
     r = rotation
     w = package[0]
     h = package[1]

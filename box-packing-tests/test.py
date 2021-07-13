@@ -14,7 +14,8 @@ box_list = [
 
 
 def get_packages() -> Tuple[List, int]:
-    """Gets the package sizes from the user and calculates the total volume of the packages
+    """Gets the package sizes from the user
+    and calculates the total volume of the packages
 
     Returns: packages_list and volume of packages
     """
@@ -28,7 +29,10 @@ def get_packages() -> Tuple[List, int]:
         height = int(input("Height? "))
         depth = int(input("Depth? "))
         total_volume += (width * height * depth)
-        packages_list.append({"name": str(i), "width": width, "height": height, "depth": depth})
+        packages_list.append({"name": str(i),
+                              "width": width,
+                              "height": height,
+                              "depth": depth})
     return packages_list, total_volume
 
 
@@ -38,7 +42,10 @@ for box in box_list:
     packer = Packer()
     packer.add_bin(box)
     for package in packages:
-        packer.add_item(Item(package["name"], package["width"], package["height"], package["depth"], 0.1))
+        packer.add_item(Item(package["name"],
+                             package["width"],
+                             package["height"],
+                             package["depth"], 0.1))
     packer.pack(number_of_decimals=0)
     if box.unfitted_items == []:
         print("All items fit!")
