@@ -1,7 +1,6 @@
 from blessed import Terminal
 from PIL import Image
 
-
 # Constants
 IMAGE_WIDTH = 100
 IMAGE_HEIGHT = 50
@@ -119,12 +118,5 @@ def main() -> None:
         print(terminal.clear + 'Exiting!', end='')
     
 
-
-if __name__ == '__main__':
-    import time
-    from pyautogui import press
-    start_time = time.time()
-    main()
-    press("esc")
-    print("--- %s seconds ---" % (time.time() - start_time))
-    
+if __name__ == '__main__':    
+    main()    
