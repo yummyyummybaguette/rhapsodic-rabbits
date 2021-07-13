@@ -20,8 +20,7 @@ BOX_LIST = [
 
 
 def get_packages() -> Tuple[List, int]:
-    """Gets the package sizes from the user
-    and calculates the total volume of the packages
+    """Get the package sizes and calculate total volume of packages
 
     Returns: packages_list and volume of packages
     """
@@ -79,7 +78,9 @@ for item in box.items:
     print(item.string())
     print(item.position)
     print(item.rotation_type)
-    package_dims = [float(item.width), float(item.height), float(item.depth)]
+    package_dims = [float(item.width),
+                    float(item.height),
+                    float(item.depth)]
     packages_list.append(package_dims)
     position = [float(i) for i in item.position]
     positions_list.append(position)
@@ -93,7 +94,7 @@ COLORS_LIST = ["blue",
                "lime",
                "yellow",
                "pink",
-               "turquiose",
+               "turquoise",
                "maroon"]
 
 BOX_ALPHA = 0.3
@@ -127,7 +128,7 @@ ax.plot3D([0, width],
 for package, rotation, position, color in zip(packages_list,
                                               rotations_list,
                                               positions_list,
-                                              COLORS_LIST[0:len(COLORS_LIST)]):
+                                              COLORS_LIST):
     r = rotation
     w = package[0]
     h = package[1]
