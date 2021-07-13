@@ -10,15 +10,15 @@ height = 5
 depth = 5
 
 # Create list of dimensions of each package
-packages_list = [[2, 3, 4], [4, 2, 2], [1, 2, 1], [3, 1, 4]]
+packages_list = [[2, 3, 4], [4, 2, 2], [1, 2, 1], [3, 1, 4], [2, 1, 4]]
 
 # Create rotations list
-rotations_list = [3, 0, 0, 0]
+rotations_list = [0, 2, 0, 1, 0]
 
 # x,y,z position for each package
-positions_list = [[0, 2, 2], [0, 2, 0], [0, 0, 0], [1, 0, 0]]
+positions_list = [[0, 2, 0], [3, 3, 0], [0, 0, 0], [3, 0, 0], [1, 0, 0]]
 
-colors_list = ["blue", "orange", "green", "brown"]
+colors_list = ["blue", "orange", "green", "brown", "purple"]
 
 BOX_ALPHA = 0.3
 
@@ -99,7 +99,6 @@ for package, rotation, position, color in zip(packages_list, rotations_list, pos
     verts = [list(zip(x, y, z))]
     ax.add_collection3d(Poly3DCollection(verts, color=color, alpha=BOX_ALPHA))
 
-# ax.add_collection3d(Poly3DCollection(verts))
 ax.axes.set_xlim3d(left=0, right=width)
 ax.axes.set_ylim3d(bottom=0, top=height)
 ax.axes.set_zlim3d(bottom=0, top=depth)
