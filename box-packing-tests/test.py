@@ -54,19 +54,3 @@ for item in box.items:
     print(item.string())
     print(item.position)
     print(item.rotation_type)
-
-
-"""
-fig = plt.figure()
-ax = plt.axes(projection='3d')
-x = [0,1,1,0]
-y = [0,0,1,1]
-z = [0,1,0,1]
-verts = [list(zip(x,y,z))]
-ax.add_collection3d(Poly3DCollection(verts))
-
-
-fig.show()
-
-input("press to continue")
-"""
