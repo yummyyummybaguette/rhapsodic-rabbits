@@ -85,11 +85,16 @@ for item in box.items:
     positions_list.append(position)
     rotations_list.append(item.rotation_type)
 
-colors_list = ["blue",
+COLORS_LIST = ["blue",
                "orange",
                "green",
                "brown",
-               "purple"]
+               "purple",
+               "lime",
+               "yellow",
+               "pink",
+               "turquiose",
+               "maroon"]
 
 BOX_ALPHA = 0.3
 
@@ -122,7 +127,7 @@ ax.plot3D([0, width],
 for package, rotation, position, color in zip(packages_list,
                                               rotations_list,
                                               positions_list,
-                                              colors_list[0:len(colors_list)]):
+                                              COLORS_LIST[0:len(COLORS_LIST)]):
     r = rotation
     w = package[0]
     h = package[1]
