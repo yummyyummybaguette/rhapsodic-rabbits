@@ -1,23 +1,100 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from typing import List, Tuple
+from py3dbp import Bin, Item, Packer
 
-# This code is to test the algorithm from the py3dbp package
+# All dimensions are in inches
+BOX_LIST = [
+    Bin('0', 3, 3, 3, 100),
+    Bin('1', 3, 4, 3, 100),
+    Bin('2', 4, 4, 4, 100),
+    Bin('3', 5, 5, 6, 100),
+    Bin('4', 6, 6, 6, 100),
+    Bin('6', 7, 7, 8, 100),
+    Bin('7', 7, 9, 7, 100),
+    Bin('8', 8, 8, 8, 100),
+    Bin('9', 8, 9, 8, 100),
+    Bin('10', 9, 10, 12, 100),
+    Bin('11', 12, 18, 6, 100)
+]
+
+
+def get_packages() -> Tuple[List, int]:
+    """Gets the package sizes from the user
+    and calculates the total volume of the packages
+
+    Returns: packages_list and volume of packages
+    """
+    packages_list = []
+    total_volume = 0
+    number_of_packages = int(input("How many packages? "))
+    for i in range(1, number_of_packages + 1):
+        print(" ")
+        print(f"Data for Package {i}.")
+        width = float(input("Width? "))
+        height = float(input("Height? "))
+        depth = float(input("Depth? "))
+        total_volume += (width * height * depth)
+        packages_list.append({"name": str(i),
+                              "width": width,
+                              "height": height,
+                              "depth": depth})
+    return packages_list, total_volume
+
+
+packages, packages_volume = get_packages()
+
+for box in BOX_LIST:
+    packer = Packer()
+    packer.add_bin(box)
+    for package in packages:
+        packer.add_item(Item(package["name"],
+                             package["width"],
+                             package["height"],
+                             package["depth"], 0.1))
+    packer.pack(number_of_decimals=0)
+    if box.unfitted_items == []:
+        print("All items fit!")
+        print(" ")
+        fit_box = box
+        break
 
 # Box dimensions for the box the packages fit into
-width = 5
-height = 5
-depth = 5
+width = float(box.width)
+height = float(box.height)
+depth = float(box.depth)
+rotations_list = []
+positions_list = []
+packages_list = []
 
-# Create list of dimensions of each package
-packages_list = [[2, 3, 4], [4, 2, 2], [1, 2, 1], [3, 1, 4], [2, 1, 4]]
+print(f'width = {width}, height = {height}, depth = {depth}')
 
-# Create rotations list
-rotations_list = [0, 2, 0, 1, 0]
+print(" ")
+print(box.name)
+print(f'Volume of box: {box.width * box.height * box.depth} cubic inches')
+print(f'Volume of packages: {packages_volume} cubic inches')
+print(" ")
+for item in box.items:
+    print(item.width)
+    print(item.string())
+    print(item.position)
+    print(item.rotation_type)
+    package_dims = [float(item.width), float(item.height), float(item.depth)]
+    packages_list.append(package_dims)
+    position = [float(i) for i in item.position]
+    positions_list.append(position)
+    rotations_list.append(item.rotation_type)
 
-# x,y,z position for each package
-positions_list = [[0, 2, 0], [3, 3, 0], [0, 0, 0], [3, 0, 0], [1, 0, 0]]
-
-colors_list = ["blue", "orange", "green", "brown", "purple"]
+COLORS_LIST = ["blue",
+               "orange",
+               "green",
+               "brown",
+               "purple",
+               "lime",
+               "yellow",
+               "pink",
+               "turquiose",
+               "maroon"]
 
 BOX_ALPHA = 0.3
 
@@ -50,11 +127,15 @@ ax.plot3D([0, width],
 for package, rotation, position, color in zip(packages_list,
                                               rotations_list,
                                               positions_list,
-                                              colors_list):
+                                              COLORS_LIST[0:len(COLORS_LIST)]):
     r = rotation
     w = package[0]
     h = package[1]
     d = package[2]
+    print(f'{w} {h} {d}')
+    print(f'{rotation}')
+    print(f'{position}')
+    print(" ")
 
     if r != 0:
         wt = w
