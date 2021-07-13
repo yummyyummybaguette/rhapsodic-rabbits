@@ -77,7 +77,7 @@ class Menu:
             start_x, start_y = self.origin
             offset_x, offset_y = coords[0]
 
-            res = self.terminal.move_xy(x=start_x+offset_x, y=start_y+offset_y)
+            res = self.terminal.move_xy(x=start_x + offset_x, y=start_y + offset_y)
             res += ''.join(
                 self.terminal.on_color_rgb(*bg) + self.terminal.black(char)
                 for char, bg in zip(text, backgrounds)
@@ -151,7 +151,7 @@ def main() -> None:
     with terminal.cbreak():
         key = terminal.inkey(timeout=0)
         while key.name != 'KEY_ESCAPE':
-            key = terminal.inkey(timeout=0)            
+            key = terminal.inkey(timeout=0)
             if key.name == 'KEY_LEFT':
                 m.selection -= 1
                 m.draw_menu_text()
@@ -160,5 +160,6 @@ def main() -> None:
                 m.draw_menu_text()
     print(terminal.clear + 'Exiting!', end='')
 
-if __name__ == '__main__':    
-    main()    
+
+if __name__ == '__main__':
+    main()

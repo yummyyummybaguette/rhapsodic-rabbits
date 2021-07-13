@@ -1,6 +1,6 @@
-from py3dbp import Packer, Bin, Item
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
+from typing import List, Tuple
+
+from py3dbp import Bin, Item, Packer
 
 # All dimensions are in inches
 box_list = [
@@ -9,13 +9,13 @@ box_list = [
     Bin('small_2', 4, 4, 4, 100),
     Bin('small_3', 5, 5, 5, 100),
     Bin('medium', 6, 6, 6, 100),
-    Bin('large', 7, 7, 7, 100)   
+    Bin('large', 7, 7, 7, 100)
 ]
 
-def get_packages():
-    """Gets the package sizes from the user and
-    calculates the total volume of the packages
-    
+
+def get_packages() -> Tuple[List, int]:
+    """Gets the package sizes from the user and calculates the total volume of the packages
+
     Returns: packages_list and volume of packages
     """
     packages_list = []
@@ -24,12 +24,13 @@ def get_packages():
     for i in range(1, number_of_packages + 1):
         print(" ")
         print(f"Data for Package {i}.")
-        width = int(input("Width? ")) 
+        width = int(input("Width? "))
         height = int(input("Height? "))
-        depth= int(input("Depth? "))
+        depth = int(input("Depth? "))
         total_volume += (width * height * depth)
         packages_list.append({"name": str(i), "width": width, "height": height, "depth": depth})
-    return (packages_list, total_volume)
+    return packages_list, total_volume
+
 
 packages, packages_volume = get_packages()
 
@@ -37,13 +38,13 @@ for box in box_list:
     packer = Packer()
     packer.add_bin(box)
     for package in packages:
-        packer.add_item(Item(package["name"], package["width"], package["height"], package["depth"], 0.1))      
+        packer.add_item(Item(package["name"], package["width"], package["height"], package["depth"], 0.1))
     packer.pack(number_of_decimals=0)
     if box.unfitted_items == []:
         print("All items fit!")
         print(" ")
         fit_box = box
-        break    
+        break
 
 print(" ")
 print(box.name)
