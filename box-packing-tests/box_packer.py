@@ -1,58 +1,74 @@
-from typing import List
 import enum
+from decimal import Decimal
+from typing import List
 
 import py3dbp
 
+
 class Axis(enum.Enum):
+    """
+    Represents a single axis.
+
+    Width is on the x-axis, height is on the y-axis and depth is on the z-axis given a right handed coordinate system.
+    """
+
     width = 1
     height = 2
     depth = 3
 
 
 class Dimensions:
-    def __init__(self, width, height, depth) -> None:
+    """
+    Represents the dimensions of a container.
+
+    Width is on the x-axis, height is on the y-axis and depth is on the z-axis given a right handed coordinate system.
+    """
+
+    def __init__(self, width: Decimal, height: Decimal, depth: Decimal) -> None:
         self.width = width
         self.height = height
         self.depth = depth
 
 
 class Orientation:
+    """Represents an orientation of a container in space"""
+
     def __init__(self, x_axis: Axis, y_axis: Axis, z_axis: Axis) -> None:
         self.x_axis = x_axis
         self.y_axis = y_axis
         self.z_axis = z_axis
 
 
-def rotate_container(container: py3dbp.Bin, new_orientation: Orientation, original_dims: Dimensions) -> None:
+def rotate_container(container_box: py3dbp.Bin, new_orientation: Orientation, original_dims: Dimensions) -> None:
     """
-    Rotates the container to the orientation specified by `new_orienation`. This would be ideally a class method but
-    the API provided by py3dbp does not allow this...
+    Rotates the container to the orientation specified by `new_orienation`.
+
+    This would be ideally a class method but the API provided by py3dbp does not allow this...
     """
     if new_orientation.x_axis == Axis.width:
-        container.width = original_dims.width
+        container_box.width = original_dims.width
     elif new_orientation.x_axis == Axis.height:
-        container.height = original_dims.height
+        container_box.height = original_dims.height
     else:
-        container.depth = original_dims.depth
+        container_box.depth = original_dims.depth
 
     if new_orientation.y_axis == Axis.width:
-        container.height = original_dims.width
+        container_box.height = original_dims.width
         pass
     elif new_orientation.y_axis == Axis.height:
-        container.height = original_dims.height
+        container_box.height = original_dims.height
     else:
-        container.height = original_dims.depth
+        container_box.height = original_dims.depth
 
     if new_orientation.z_axis == Axis.width:
-        container.depth = original_dims.width
+        container_box.depth = original_dims.width
     elif new_orientation.z_axis == Axis.height:
-        container.depth = original_dims.height
+        container_box.depth = original_dims.height
     else:
-        container.depth = original_dims.depth
-    
+        container_box.depth = original_dims.depth
 
 
-def pack_items(container: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Packer:
+def pack_items(container_box: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Packer:
     """
     Attempts to pack the items using the heuristic algorithm outlined here:
 
@@ -62,9 +78,8 @@ def pack_items(container: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Packer
     There is a slight modification to this algorithm as certain rotations produces false negatives where the algorithm
     believes that the boxes cannot be packed but a rotation of the outer box will produce a solution. All six rotation
     orientation will be attempted (or until a solution is found) to reduce the possibility of a false negative.
-     """
-
-    original_dims = Dimensions(container.width, container.height, container.depth)
+    """
+    original_dims = Dimensions(container_box.width, container_box.height, container_box.depth)
 
     orientations = [
         Orientation(Axis.width, Axis.height, Axis.depth),
@@ -74,11 +89,10 @@ def pack_items(container: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Packer
         Orientation(Axis.depth, Axis.width, Axis.height),
         Orientation(Axis.width, Axis.depth, Axis.height)]
 
-
     for orientation in orientations:
         packer = py3dbp.Packer()
-        rotate_container(container, orientation, original_dims)
-        packer.add_bin(container)
+        rotate_container(container_box, orientation, original_dims)
+        packer.add_bin(container_box)
         for item in items:
             packer.add_item(item)
 
