@@ -3,12 +3,11 @@ from typing import Tuple
 
 from blessed import Terminal
 
+from .helpers import TUI_HEIGHT, TUI_WIDTH
 from .menu import Menu
 
-TUI_WIDTH = 100
-TUI_HEIGHT = 50
-
 PACKAGE_DIR = Path(__file__).parents[0]
+
 
 class InsideTheBoxTUI:
     """Top-level class for the TUI"""
