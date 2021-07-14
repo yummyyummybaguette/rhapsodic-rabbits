@@ -3,11 +3,12 @@ from typing import Tuple
 
 from blessed import Terminal
 
-from menu import Menu
+from .menu import Menu
 
 TUI_WIDTH = 100
 TUI_HEIGHT = 50
 
+PACKAGE_DIR = Path(__file__).parents[0]
 
 class InsideTheBoxTUI:
     """Top-level class for the TUI"""
@@ -17,7 +18,7 @@ class InsideTheBoxTUI:
         print(self.terminal.clear, end='')
         self.menu = Menu(
             terminal=self.terminal,
-            background=Path('resources') / 'menu.png',
+            background=PACKAGE_DIR / 'resources' / 'menu.png',
             size=size
         )
 
@@ -37,8 +38,3 @@ class InsideTheBoxTUI:
     def exit(self) -> None:
         """Clear the terminal and exit the TUI"""
         print(self.terminal.clear + 'Exiting!', end='')
-
-
-if __name__ == '__main__':
-    app = InsideTheBoxTUI(terminal=Terminal())
-    app.run()
