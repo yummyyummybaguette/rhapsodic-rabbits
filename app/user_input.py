@@ -14,6 +14,7 @@ class UserInput:
         self.terminal = terminal
 
     def run(self) -> None:
+        """Start the interface to collect input from the user"""
         with self.terminal.hidden_cursor():
             print(self.terminal.home + self.terminal.on_white + self.terminal.clear)
             msg = "How many items need to be packed?"

@@ -80,13 +80,16 @@ class Menu:
         return self.background_pixels[y][x]
 
     def increment(self) -> None:
+        """Increment the selection index"""
         self.num -= 1
         self.draw_menu_text()
 
     def decrement(self) -> None:
+        """Decrement the selection index"""
         self.num += 1
         self.draw_menu_text()
 
     @property
     def selection(self) -> Any:
+        """Get the function that corresponds to the current menu selection, as defined in self.opts"""
         return self.opts[self.texts[self.num % len(self.texts)]]
