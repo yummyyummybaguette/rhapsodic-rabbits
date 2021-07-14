@@ -1,6 +1,7 @@
+from typing import List, Tuple
+
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from typing import List, Tuple
 from py3dbp import Bin, Item, Packer
 
 # All dimensions are in inches
