@@ -1,4 +1,5 @@
 import enum
+from dataclasses import dataclass
 from decimal import Decimal
 from typing import List
 
@@ -17,6 +18,7 @@ class Axis(enum.Enum):
     depth = 3
 
 
+@dataclass
 class Dimensions:
     """
     Represents the dimensions of a container.
@@ -24,19 +26,18 @@ class Dimensions:
     Width is on the x-axis, height is on the y-axis and depth is on the z-axis given a right handed coordinate system.
     """
 
-    def __init__(self, width: Decimal, height: Decimal, depth: Decimal) -> None:
-        self.width = width
-        self.height = height
-        self.depth = depth
+    width: Decimal
+    height: Decimal
+    depth: Decimal
 
 
+@dataclass
 class Orientation:
     """Represents an orientation of a container in space"""
 
-    def __init__(self, x_axis: Axis, y_axis: Axis, z_axis: Axis) -> None:
-        self.x_axis = x_axis
-        self.y_axis = y_axis
-        self.z_axis = z_axis
+    x_axis: Axis
+    y_axis: Axis
+    z_axis: Axis
 
 
 def rotate_container(container_box: py3dbp.Bin, new_orientation: Orientation, original_dims: Dimensions) -> None:
