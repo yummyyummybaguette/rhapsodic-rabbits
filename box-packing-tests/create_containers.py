@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
-def create_containers(max_dim=12):
+def create_containers(max_dim: int = 12) -> list:
     """Creates containers for all permutations of dimensions.
 
     The maximum dimension for any side is set by max_dim.
@@ -27,7 +27,8 @@ def create_containers(max_dim=12):
     return container_list
 
 
-def pack_items(container_box, items):
+def pack_items(container_box: py3dbp.Bin,
+               items: list[py3dbp.Item]) -> py3dbp.Packer:
     """Attempts to pack items into container"""
     packer = py3dbp.Packer()
     packer.add_bin(container_box)
@@ -37,7 +38,7 @@ def pack_items(container_box, items):
     return container_box
 
 
-def plot_result(result):
+def plot_result(result: py3dbp.Packer) -> None:
     """Plots a solution. Limited to 10 items by COLORS_LIST"""
     width = float(result.width)
     height = float(result.height)
