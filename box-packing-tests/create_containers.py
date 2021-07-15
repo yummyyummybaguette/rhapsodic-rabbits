@@ -7,8 +7,9 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
 def create_containers(max_dim=12):
-    """Creates containers with dimensions of all permutations with
-     sides up to the max_dim. The containers are sorted by volume.
+    """Creates containers for all permutations of dimensions.
+
+    The maximum dimension for any side is set by max_dim.
     """
     num_list = []
     for i in range(1, max_dim + 1):
