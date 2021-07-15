@@ -37,7 +37,7 @@ def pack_items(container_box, items):
 
 
 def plot_result(result):
-    """Plots a solution"""
+    """Plots a solution. Limited to 10 items by COLORS_LIST"""
     width = float(result.width)
     height = float(result.height)
     depth = float(result.depth)
