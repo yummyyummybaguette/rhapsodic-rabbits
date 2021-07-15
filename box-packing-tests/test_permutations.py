@@ -15,15 +15,12 @@ def create_containers(max_dim: int = 12) -> list:
     for i in range(1, max_dim + 1):
         num_list += [i]*3
     container_dims = list(set(permutations(num_list, 3)))
-    print(container_dims)
     container_vol_list = [math.prod(container_dim)
                           for container_dim
                           in container_dims]
-    print(container_vol_list)
     container_dims_sort = [cont
                            for vol, cont
                            in sorted(zip(container_vol_list, container_dims))]
-    print(container_dims_sort)
     container_list = [py3dbp.Bin(str(i), dim[0], dim[1], dim[2], 100)
                       for i, dim
                       in enumerate(container_dims_sort)]
@@ -190,13 +187,13 @@ def plot_result(result: py3dbp.Packer) -> None:
 
 # A small test to see if this works or not
 if __name__ == '__main__':
-    container_list = create_containers(max_dim=8)
+    container_list = create_containers(max_dim=5)
 
     item_list = [py3dbp.Item('Box-1', 3, 1, 2, 1),
-                 py3dbp.Item('Box-2', 3, 4, 2, 1),
+                 py3dbp.Item('Box-2', 3, 1, 2, 1),
                  py3dbp.Item('Box-3', 3, 1, 2, 1),
-                 py3dbp.Item('Box-4', 3, 5, 2, 1),
-                 py3dbp.Item('Box-5', 3, 1, 6, 1)]
+                 py3dbp.Item('Box-4', 3, 1, 2, 1),
+                 py3dbp.Item('Box-5', 3, 1, 2, 1)]
 
     for container in container_list:
         result = pack_items(container, item_list)
