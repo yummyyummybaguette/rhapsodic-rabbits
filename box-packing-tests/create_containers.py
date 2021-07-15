@@ -3,6 +3,7 @@ from itertools import permutations
 
 import py3dbp
 
+
 def pack_items(container_box, items):
     """Attempts to pack items into container"""
     packer = py3dbp.Packer()
@@ -14,20 +15,22 @@ def pack_items(container_box, items):
 
 
 def create_containers(max_dim=12):
-    """Creates containers with dimensions of all permutations with sides up to max_dim"""
+    """Creates containers with dimensions of all permutations with
+     sides up to the max_dim. The containers are sorted by volume.    
+    """
     num_list = []
     for i in range(1, max_dim + 1):
         num_list += [i]*3
     container_dims = list(set(permutations(num_list, 3)))
-    #container_volumes_list = [math.prod(container_dim) for container_dim in container_dims]
-    #print(container_volumes_list)
+    container_volumes_list = [math.prod(container_dim) for container_dim in container_dims]
+    print(container_volumes_list)    
     container_list = [py3dbp.Bin(str(i), dim[0], dim[1], dim[2], 100) for i, dim in enumerate(container_dims)]
-    return container_list
+    container_list_sorted = [cont for cont, volume in sorted(zip(container_volumes_list, container_list))]
+    return container_list_sorted
 
 
 # A small test to see if this works or not
 if __name__ == '__main__':
-    # Create all combinations of dimensions up to max_dim
     container_list = create_containers(max_dim=6)
 
     item_list = [py3dbp.Item('Box-1', 3, 1, 2, 1),
