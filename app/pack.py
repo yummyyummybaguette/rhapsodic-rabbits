@@ -1,6 +1,8 @@
 import enum
+import math
 from dataclasses import dataclass
 from decimal import Decimal
+from itertools import permutations
 from typing import List
 
 import py3dbp
@@ -38,6 +40,27 @@ class Orientation:
     x_axis: Axis
     y_axis: Axis
     z_axis: Axis
+
+
+def create_containers(max_dim: int = 12) -> list:
+    """Creates containers for all permutations of dimensions.
+
+    The maximum dimension for any side is set by max_dim.
+    """
+    num_list = []
+    for i in range(1, max_dim + 1):
+        num_list += [i] * 3
+    container_dims = list(set(permutations(num_list, 3)))
+    container_vol_list = [math.prod(container_dim)
+                          for container_dim
+                          in container_dims]
+    container_dims_sort = [cont
+                           for vol, cont
+                           in sorted(zip(container_vol_list, container_dims))]
+    container_list = [py3dbp.Bin(str(i), dim[0], dim[1], dim[2], 100)
+                      for i, dim
+                      in enumerate(container_dims_sort)]
+    return container_list
 
 
 def rotate_container(container_box: py3dbp.Bin, new_orientation: Orientation, original_dims: Dimensions) -> None:
@@ -100,9 +123,7 @@ def pack_items(container_box: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Pa
         packer.pack()
 
         if not packer.unfit_items:
-            return packer
-
-    return None
+            return packer.bins[0]
 
 
 # A small test to see if this works or not
