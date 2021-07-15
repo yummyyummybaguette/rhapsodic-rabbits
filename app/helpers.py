@@ -56,3 +56,25 @@ def color_positions(
                     continue
                 out[pixel] = [(x, y)]
     return out
+
+
+def get_packages() -> Tuple[List, int]:
+    """Get the package sizes and calculate total volume of packages
+
+    Returns: packages_list and volume of packages
+    """
+    packages_list = []
+    total_volume = 0
+    number_of_packages = int(input("How many packages? "))
+    for i in range(1, number_of_packages + 1):
+        print(" ")
+        print(f"Data for Package {i}.")
+        width = float(input("Width? "))
+        height = float(input("Height? "))
+        depth = float(input("Depth? "))
+        total_volume += (width * height * depth)
+        packages_list.append({"name": str(i),
+                              "width": width,
+                              "height": height,
+                              "depth": depth})
+    return packages_list, total_volume
