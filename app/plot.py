@@ -34,8 +34,7 @@ def plot_result(result: Packer) -> None:
 
     BOX_ALPHA = 0.3
 
-    fig = plt.figure()
-    ax = plt.axes(projection='3d')
+    fig, ax = plt.subplots(subplot_kw={'projection': '3d'})
 
     ax.plot3D([0, 0, 0, 0, 0],
               [0, height, height, 0, 0],
@@ -144,7 +143,7 @@ def plot_result(result: Packer) -> None:
     ax.axes.set_ylim3d(bottom=0, top=height)
     ax.axes.set_zlim3d(bottom=0, top=depth)
     ax.set_box_aspect((width, 1.1*height, depth))
-    plt.axis('off')
-    fig.show()
 
-    input("press to continue")
+    plt.axis('off')
+
+    return fig

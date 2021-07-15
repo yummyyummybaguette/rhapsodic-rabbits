@@ -1,3 +1,5 @@
+import tkinter
+
 import py3dbp
 
 from app.pack import create_containers, pack_items
@@ -31,4 +33,6 @@ if __name__ == '__main__':
     Depth: {result.depth}
     ''')
 
-    plot_result(result)
+    fig = plot_result(result).show()
+    # https://stackoverflow.com/questions/9280171/matplotlib-python-show-returns-immediately
+    tkinter.mainloop()
