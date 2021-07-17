@@ -1,4 +1,7 @@
+import time
+from os import listdir
 from pathlib import Path
+from random import choice
 from typing import Any, Tuple, Union
 
 from blessed import Terminal
@@ -35,10 +38,13 @@ class Menu:
     def __init__(self,
                  terminal: Terminal,
                  background: Union[str, Path],
+                 animations: Union[str, Path],
                  size: Tuple[int, int] = (TUI_WIDTH, TUI_HEIGHT)):
         self.terminal: Terminal = terminal
         size = (size[0] * 2, size[1])
         self.background_pixels = get_pixels(background, size)
+        self.animations = [[get_pixels(animations / anim / im, size)
+                            for im in listdir(animations / anim)] for anim in listdir(animations)]
         overlay_path = background.with_name(f'{background.stem}_overlay{background.suffix}')
         self.text_pixels = get_pixels(overlay_path, size)
         self.overlay_positions = color_positions(self.text_pixels)
@@ -88,6 +94,19 @@ class Menu:
         """Decrement the selection index"""
         self.num += 1
         self.draw_menu_text()
+
+    def animation(self) -> None:
+        """Plays a randomly selected animation"""
+        animation = choice(self.animations)
+        start = time.time()
+        per_frame = 1/24
+        for frame in animation:
+            print(self.terminal.move_xy(*self.origin))
+            draw_image(self.terminal, frame)
+            # Maintains fps of animation
+            while time.time() - start < per_frame:
+                pass
+            start = time.time()
 
     @property
     def selection(self) -> Any:

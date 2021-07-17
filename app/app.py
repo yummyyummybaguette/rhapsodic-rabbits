@@ -14,10 +14,11 @@ class InsideTheBoxTUI:
 
     def __init__(self, terminal: Terminal, size: Tuple[int, int] = (TUI_WIDTH, TUI_HEIGHT)):
         self.terminal = terminal
-        print(self.terminal.clear, end='')
+        print(self.terminal.clear + self.terminal.normal + self.terminal.home, end='')
         self.menu = Menu(
             terminal=self.terminal,
             background=PACKAGE_DIR / 'resources' / 'menu.png',
+            animations=PACKAGE_DIR / 'resources' / 'animations',
             size=size
         )
 
@@ -31,9 +32,10 @@ class InsideTheBoxTUI:
                     self.menu.increment()
                 elif key.name == 'KEY_ENTER':
                     with self.terminal.location():
-                        print(self.menu.selection)
+                        # print(self.menu.selection)
+                        self.menu.animation()
         self.exit()
 
     def exit(self) -> None:
         """Clear the terminal and exit the TUI"""
-        print(self.terminal.clear + 'Exiting!', end='')
+        print(self.terminal.normal + self.terminal.clear + 'Exiting!', end='')

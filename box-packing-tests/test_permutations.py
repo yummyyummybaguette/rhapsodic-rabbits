@@ -1,8 +1,8 @@
 import math
 from itertools import permutations
 
-import py3dbp
 import matplotlib.pyplot as plt
+import py3dbp
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
