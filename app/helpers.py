@@ -11,7 +11,7 @@ TUI_HEIGHT = 50
 
 def get_pixels(image_path: Union[str, Path], size: Tuple[int, int]) -> List[List[Tuple[int, int, int, int]]]:
     """
-    Gets the pixels of an image for the provided background, after resizing
+    Gets the pixels of an image for the provided file path, after resizing
 
     Returns: List[List[Tuple[int, int, int, int]]]
         two-dimensional list of image pixels
