@@ -58,10 +58,10 @@ def plot_result(result: Packer) -> None:
               color="red")
 
     # Plot items
-    for package, rotation, position, color in zip(packages_list,
+    for idx, (package, rotation, position) in enumerate(zip(packages_list,
                                                   rotations_list,
-                                                  positions_list,
-                                                  COLORS_LIST):
+                                                  positions_list)):
+        color = COLORS_LIST[idx % len(COLORS_LIST)]
         r = rotation
         w = package[0]
         h = package[1]
