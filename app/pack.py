@@ -1,143 +1,80 @@
-import enum
 import math
-from dataclasses import dataclass
-from decimal import Decimal
+import tkinter
+from plot import plot_result
 from itertools import permutations
-from typing import List
 
 import py3dbp
 
 
-class Axis(enum.Enum):
-    """
-    Represents a single axis.
-
-    Width is on the x-axis, height is on the y-axis and depth is on the z-axis given a right handed coordinate system.
-    """
-
-    width = 1
-    height = 2
-    depth = 3
-
-
-@dataclass
-class Dimensions:
-    """
-    Represents the dimensions of a container.
-
-    Width is on the x-axis, height is on the y-axis and depth is on the z-axis given a right handed coordinate system.
-    """
-
-    width: Decimal
-    height: Decimal
-    depth: Decimal
-
-
-@dataclass
-class Orientation:
-    """Represents an orientation of a container in space"""
-
-    x_axis: Axis
-    y_axis: Axis
-    z_axis: Axis
-
-
-def create_containers(max_dim: int = 12) -> list:
+def create_containers(items: list[py3dbp.Item], max_dim: int = 30) -> list:
     """Creates containers for all permutations of dimensions.
 
     The maximum dimension for any side is set by max_dim.
     """
     num_list = []
     for i in range(1, max_dim + 1):
-        num_list += [i] * 3
+        num_list += [i] * 3   
+    items_volume = int(sum([item.width * item.height * item.depth
+                            for item
+                            in items]))
     container_dims = list(set(permutations(num_list, 3)))
     container_vol_list = [math.prod(container_dim)
                           for container_dim
                           in container_dims]
+    container_vols_sorted = sorted(container_vol_list)   
+    min_volume_index = [index
+                        for index, volume
+                        in enumerate(container_vols_sorted)
+                        if volume > items_volume][0]  
+    container_start_vol = container_vols_sorted[min_volume_index-1]    
+    start_index = container_vols_sorted.index(container_start_vol)
     container_dims_sort = [cont
                            for vol, cont
                            in sorted(zip(container_vol_list, container_dims))]
     container_list = [py3dbp.Bin(str(i), dim[0], dim[1], dim[2], 100)
                       for i, dim
-                      in enumerate(container_dims_sort)]
+                      in enumerate(container_dims_sort[start_index:])]
     return container_list
 
 
-def rotate_container(container_box: py3dbp.Bin, new_orientation: Orientation, original_dims: Dimensions) -> None:
-    """
-    Rotates the container to the orientation specified by `new_orienation`.
-
-    This would be ideally a class method but the API provided by py3dbp does not allow this...
-    """
-    if new_orientation.x_axis == Axis.width:
-        container_box.width = original_dims.width
-    elif new_orientation.x_axis == Axis.height:
-        container_box.height = original_dims.height
-    else:
-        container_box.depth = original_dims.depth
-
-    if new_orientation.y_axis == Axis.width:
-        container_box.height = original_dims.width
-        pass
-    elif new_orientation.y_axis == Axis.height:
-        container_box.height = original_dims.height
-    else:
-        container_box.height = original_dims.depth
-
-    if new_orientation.z_axis == Axis.width:
-        container_box.depth = original_dims.width
-    elif new_orientation.z_axis == Axis.height:
-        container_box.depth = original_dims.height
-    else:
-        container_box.depth = original_dims.depth
-
-
-def pack_items(container_box: py3dbp.Bin, items: List[py3dbp.Item]) -> py3dbp.Packer:
-    """
-    Attempts to pack the items using the heuristic algorithm outlined here:
-
-    https://www.semanticscholar.org/paper/OPTIMIZING-THREE-DIMENSIONAL-BIN-PACKING-THROUGH-Dube
-    /bb9986af2f26f7726fcef1bc684eac8239c9b853.
-
-    There is a slight modification to this algorithm as certain rotations produces false negatives where the algorithm
-    believes that the boxes cannot be packed but a rotation of the outer box will produce a solution. All six rotation
-    orientation will be attempted (or until a solution is found) to reduce the possibility of a false negative.
-    """
-    original_dims = Dimensions(container_box.width, container_box.height, container_box.depth)
-
-    orientations = [
-        Orientation(Axis.width, Axis.height, Axis.depth),
-        Orientation(Axis.height, Axis.width, Axis.depth),
-        Orientation(Axis.height, Axis.depth, Axis.width),
-        Orientation(Axis.depth, Axis.height, Axis.width),
-        Orientation(Axis.depth, Axis.width, Axis.height),
-        Orientation(Axis.width, Axis.depth, Axis.height)]
-
-    for orientation in orientations:
-        packer = py3dbp.Packer()
-        rotate_container(container_box, orientation, original_dims)
-        packer.add_bin(container_box)
-        for item in items:
-            packer.add_item(item)
-
-        packer.pack()
-
-        if not packer.unfit_items:
-            return packer.bins[0]
+def pack_items(container_box: py3dbp.Bin,
+               items: list[py3dbp.Item]) -> py3dbp.Packer:
+    """Attempts to pack items into container"""
+    packer = py3dbp.Packer()
+    packer.add_bin(container_box)
+    for item in items:
+        packer.add_item(item)
+    packer.pack(number_of_decimals=0)
+    return container_box
 
 
 # A small test to see if this works or not
 if __name__ == '__main__':
-    container = py3dbp.Bin('Bin-1', 6, 1, 5, 100)
-    item_list = [
-        py3dbp.Item('Box-1', 3, 1, 2, 1),
-        py3dbp.Item('Box-2', 3, 1, 2, 1),
-        py3dbp.Item('Box-3', 3, 1, 2, 1),
-        py3dbp.Item('Box-4', 3, 1, 2, 1),
-        py3dbp.Item('Box-5', 3, 1, 2, 1)]
+    item_list = [py3dbp.Item('Box-1', 3, 1, 2, 1),
+                 py3dbp.Item('Box-2', 3, 1, 2, 1),
+                 py3dbp.Item('Box-3', 3, 1, 2, 1),
+                 py3dbp.Item('Box-4', 3, 1, 2, 1),
+                 py3dbp.Item('Box-5', 3, 1, 2, 1)]
 
-    result = pack_items(container, item_list)
-    if result.unfit_items:
-        print("Error, Should have fit all items")
+    container_list = create_containers(item_list, max_dim=5)
+    for container in container_list:
+        result = pack_items(container, item_list)
+        if not result.unfitted_items:
+            print("All items fit!")
+            print(" ")
+            break
+        else:
+            result = None
+
+    if not result:
+        print("There was no fit!")
     else:
-        print("All items were fitted as expected")
+        print(f'''Container Dimensions
+    Width: {result.width}
+    Height: {result.height}
+    Depth: {result.depth}
+    ''')
+
+    fig = plot_result(result).show()
+    # https://stackoverflow.com/questions/9280171/matplotlib-python-show-returns-immediately
+    tkinter.mainloop()
